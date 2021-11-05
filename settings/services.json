@@ -1,0 +1,35 @@
+{
+	"game": {
+		"name": "二打一",
+		"appid": "692584726",
+		"cid": "0"
+	},
+	"configs": [
+		{
+			"appid": "692584726",
+			"services": [
+				{
+					"service_id": "269",
+					"enable": true
+				},
+				{
+					"service_id": "270",
+					"enable": false
+				},
+				{
+					"service_id": "272",
+					"enable": true,
+					"params": {
+						"env_id": "test1-4gvbm18a9a10ad1e",
+						"plugin_version": "0.7.2_1.3.3"
+					}
+				},
+				{
+					"service_id": "312",
+					"enable": false
+				}
+			]
+		}
+	],
+	"needExecNative": true
+}

@@ -28,7 +28,8 @@ export default class home extends cc.Component {
     private matchingScene: cc.Node = null;
     private gameScene: cc.Node = null;
     private introduceScene: cc.Node = null;
-    public isRoomOwner:boolean = true;  //是否为房主，受邀请进入的玩家则不是房主
+    private rankingScene: cc.Node = null;
+    public isRoomOwner: boolean = true;  //是否为房主，受邀请进入的玩家则不是房主
 
     start() {
         if (!manager.gameId) {
@@ -144,6 +145,19 @@ export default class home extends cc.Component {
         }
         this.matchingBtn.on(cc.Node.EventType.TOUCH_START, this.addMatching, this);
         this.introduceBtn.on(cc.Node.EventType.TOUCH_START, this.addIntroduce, this);
+        this.rankingListBtn.on(cc.Node.EventType.TOUCH_START,this.addRankingList,this);
+    }
+    private addRankingList(){
+        this.hideScene();
+        this.rankingScene = cc.instantiate(this.rankingPrefab);
+        cc.director.getScene().addChild(this.rankingScene);
+    }
+    public removeRankingList(){
+        if(this.rankingScene != null){
+            cc.director.getScene().removeChild(this.rankingScene);
+            this.rankingScene.destroy();
+            this.rankingScene = null;
+        }
     }
     public addIntroduce() {
         this.hideScene();

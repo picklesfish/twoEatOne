@@ -3,7 +3,7 @@ import { manager } from "./manager";
 const {ccclass, property} = cc._decorator;
 
 @ccclass
-export default class NewClass extends cc.Component {
+export default class introduce extends cc.Component {
     private main:cc.Node = null;
     private goHome:cc.Node = null;
     private back:cc.Node = null;
