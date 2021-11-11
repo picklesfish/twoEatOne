@@ -35,3 +35,9 @@ export class WXInviteInfo{
     type:number = 0;        //1是对战
 }
 
+//主域与开放数据域的信息交互类型
+export class openData{
+    type:number = 2;    //1排行榜，2首页数据展示，3在线匹配数据展示，4好友对战数据展示，5分数上传    
+    data:any = null;
+}
+

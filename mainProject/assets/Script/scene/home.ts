@@ -2,7 +2,7 @@ import configs from "../config";
 import * as Util from "../util";
 import global from "../global";
 import { manager } from "./manager";
-import { WXAuth } from "./wxSDK";
+import { WXAuth,uploadScore } from "./wxSDK";
 
 const { ccclass, property } = cc._decorator;
 @ccclass
@@ -13,6 +13,10 @@ export default class home extends cc.Component {
     private rankingListBtn: cc.Node = null;
     private introduceBtn: cc.Node = null;
     private shade: cc.Node = null;
+    private userInfo:cc.Node = null;
+
+    //开放域窗口
+    private subContextView:cc.Node = null;
 
     @property({ type: cc.Prefab, displayName: "matchingScene", visible: true })
     private matchingPrefab: cc.Prefab = null;
@@ -121,6 +125,20 @@ export default class home extends cc.Component {
         manager.userInfo.info = res.userInfo;
         manager.userInfo.canTouch = true;
         manager.getInstance().getHomeScene().shade.active = false;
+        console.log("res");
+        this.userInfo.active = true;
+        let url = res.userInfo.avatarUrl;
+        cc.loader.load({url,type:'jpg'},function(err,text){
+             if(!err){
+                console.log("图片加载成功,头像");
+                manager.getInstance().getHomeScene().userInfo.getChildByName("headIcon").getChildByName("icon").getComponent(cc.Sprite).spriteFrame = new cc.SpriteFrame(text);
+            }else{
+                console.log("图片加载失败" , err);
+            }
+        });
+        this.scheduleOnce(()=>{
+            uploadScore(1);
+        },10)
     }
     
     private initNode() {
@@ -130,6 +148,9 @@ export default class home extends cc.Component {
         this.rankingListBtn = this.main.getChildByName("rankingList");
         this.introduceBtn = this.main.getChildByName("introduce");
         this.shade = this.main.getChildByName("shade");
+        this.userInfo = this.main.getChildByName("userInfo");
+
+        this.subContextView = this.main.getChildByName("subContextView");
     }
     private registerListener() {
         this.shade.on(cc.Node.EventType.TOUCH_START, () => {
@@ -151,6 +172,11 @@ export default class home extends cc.Component {
         this.hideScene();
         this.rankingScene = cc.instantiate(this.rankingPrefab);
         this.main.addChild(this.rankingScene);
+        //开放域切换场景
+        let openDataContext = wx.getOpenDataContext();
+            openDataContext.postMessage({
+                type:1
+            });
         console.log("position:",this.rankingScene.getPosition());
         this.rankingScene.setPosition(0,0);
 
@@ -175,16 +201,28 @@ export default class home extends cc.Component {
         }
     }
     public hideScene() {
+        this.unscheduleAllCallbacks();
         this.matchingBtn.active = false;
         this.AIBtn.active = false;
         this.rankingListBtn.active = false;
         this.introduceBtn.active = false;
+        this.userInfo.active = false;
+        this.subContextView.active = false;
     }
     public showScene() {
         this.matchingBtn.active = true;
         this.AIBtn.active = true;
         this.rankingListBtn.active = true;
         this.introduceBtn.active = true;
+        this.userInfo.active = true;
+
+        this.subContextView.active = true;
+        this.subContextView.getComponent(cc.WXSubContextView).update();
+        //开放域切换场景
+        let openDataContext = wx.getOpenDataContext();
+            openDataContext.postMessage({
+                type:2
+            });
     }
     public addMatching() {
         if (manager.userInfo.canTouch == false) {
@@ -211,15 +249,6 @@ export default class home extends cc.Component {
             this.gameScene.destroy();
             this.gameScene = null;
         }
-    }
-    private toAI() {
-
-    }
-    private toRankingList() {
-
-    }
-    private itoIntroduce() {
-
     }
 }
 

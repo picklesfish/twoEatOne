@@ -1,4 +1,5 @@
 import { manager } from "./manager";
+import { uploadScore } from "./wxSDK";
 
 const {ccclass, property} = cc._decorator;
 @ccclass
@@ -36,9 +37,11 @@ class gameOver extends cc.Component {
     public youWin(){
         this.win.active = true;
         this.fail.active = false;
+        uploadScore(1);
     }
     public youFail(){
         this.win.active = false;
         this.fail.active = true;
+        uploadScore(-1);
     }
 }

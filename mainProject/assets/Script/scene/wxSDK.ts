@@ -1,4 +1,4 @@
-import { WXInviteInfo } from "./commonData";
+import { WXInviteInfo, openData } from "./commonData";
 import {manager} from "./manager";
 interface ShareParams {
     type?: string;
@@ -60,5 +60,22 @@ export function WXAuth() {
                 })
             }
         }
+    });
+}
+
+/**
+ * 向子域发送消息，上传分数
+ * score为1或者-1，代表胜利或者失败，胜率由子域计算
+ * **/
+export function uploadScore(score:number){
+    let openDataContext = wx.getOpenDataContext();
+    if(openDataContext == null){
+        console.log("开放数据域实例为空");
+    }else{
+        console.log("向子域发送消息")
+    }
+    openDataContext.postMessage({
+        type:5,
+        data:score
     });
 }

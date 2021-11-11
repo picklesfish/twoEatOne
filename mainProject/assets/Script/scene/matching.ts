@@ -24,6 +24,9 @@ export default class matching extends cc.Component {
     private inviteleave:cc.Node = null;
     private inviteBegin:cc.Node = null;
 
+    //开放域窗口
+    private subContextView:cc.Node = null;
+
     private btnBack:cc.Node = null;
     private headIconBg:cc.Node = null;
     private seaarchIcon:cc.Node = null;
@@ -31,12 +34,20 @@ export default class matching extends cc.Component {
     private angle:number = 225;
     private radius:number = 30;
 
+
+
     //微信邀请好友信息
     private invitaInfo:string = null;
     private canTouch_invite:boolean = true;
     onEnable(){
         manager.getInstance().setMatchingScene(this);
         this.init();
+        //开放域切换场景
+        this.subContextView.active = true;
+        let openDataContext = wx.getOpenDataContext();
+            openDataContext.postMessage({
+                type:3
+            });
     }
     onDisable() {
         // 场景销毁时一定要清理回调，避免引用UI时报错
@@ -65,6 +76,8 @@ export default class matching extends cc.Component {
         this.inviteBegin = this.friendBittle.getChildByName("btn_begin");
         this.inviteleave = this.friendBittle.getChildByName("btn_leave");
         
+        this.subContextView = this.main.getChildByName("subContextView");
+
         this.btnBack = this.main.getChildByName("back");
         this.headIconBg = this.player2.getChildByName("headIconBg");
         this.seaarchIcon = this.headIconBg.getChildByName("icon_search");
@@ -320,8 +333,8 @@ export default class matching extends cc.Component {
         manager.getInstance().getMgobeSDK().sendToGameInfo(info);
     }
     
-
     public toGameRoom(){
+        this.subContextView.active = false;
         manager.getInstance().getHomeScene().removeMatching();
         manager.getInstance().getHomeScene().addGameScene();
     }
